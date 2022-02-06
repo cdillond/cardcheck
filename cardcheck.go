@@ -11,10 +11,9 @@ func (e InvalidInputError) Error() string {
 	return "invalid input"
 }
 
-// calculates luhn checkdigit for any valid uint64.
-// leading zeros can be ignored without
-// affecting accuracy. more performant
-// than StrGetCD, but argument size is limited.
+// GetCheckDigit calculates the Luhn checkdigit for any valid uint64.
+// Leading zeros can be ignored without affecting accuracy.
+// More performant than StrGetCD, but the argument size is limited.
 func GetCheckDigit(cnum uint64) uint64 {
 	ev := true
 	var csum uint64
@@ -38,20 +37,16 @@ func GetCheckDigit(cnum uint64) uint64 {
 	return (10 - csum%10) % 10
 }
 
-// checks if the final digit of a uint64
-// matches the luhn checkdigit generated using
-// the preceding digits in the uint64.
-// more performant than StrCheckLuhn,
-// but argument size is limited.
+// CheckLuhn checks if the final digit of a uint64 matches the Luhn checkdigit generated using the preceding digits in the uint64.
+// More performant than StrCheckLuhn, but argument size is limited.
 func CheckLuhn(fcnum uint64) bool {
 	cd := GetCheckDigit(fcnum / 10)
 	return cd == fcnum%10
 }
 
-// calculates the checkdigit for any
-// arbitrarily long string of digits (signed prefixes
-// are not permitted). returns 0 and an error if the
-// argument cannot be parsed.
+// StrGetCD calculates the checkdigit for any arbitrarily long string of digits.
+// Signed prefixes are not permitted.
+// Returns 0 and an InvalidInputError if the argument cannot be parsed.
 func StrGetCD(cnum string) (uint64, error) {
 	val_uint, err := strconv.ParseUint(cnum, 10, 64)
 	if err == nil {
@@ -103,13 +98,10 @@ func StrGetCD(cnum string) (uint64, error) {
 	return (10 - csum%10) % 10, nil
 }
 
-// checks if the final digit of any
-// arbitrarily long string of digits matches
-// the checkdigit generated using the
-// preceding digits in the string.
-// returns false and an error if argument
-// cannot be parsed. signed prefixes and
-// other non-numeric characters are not permitted.
+// StrCheckLuhn checks if the final digit of any arbitrarily long string of digits matches
+// the checkdigit generated using the preceding digits in the string.
+// Returns false and an error if argument cannot be parsed.
+// Signed prefixes and other non-numeric characters are not permitted.
 func StrCheckLuhn(fcnum string) (bool, uint64, error) {
 	cd, err := strconv.ParseUint(fcnum[len(fcnum)-1:], 10, 64)
 	if err != nil {
