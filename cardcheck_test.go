@@ -36,6 +36,7 @@ var Exb = []struct {
 	{"0", "0", 0, true, nil},
 	{"1234567890123456789", "12345678901234567894", 4, true, nil},
 	{"18446744073709551615", "184467440737095516153", 3, true, nil},
+	{"", "", 0, false, InvalidInputError{}},
 	{"1844674407370955161518446744073709551615184467440737095516151844674", "18446744073709551615184467440737095516151844674407370955161518446748", 8, true, nil},
 }
 
@@ -106,12 +107,12 @@ func BenchmarkStrCheckLuhn(b *testing.B) {
 
 func TestStrCheckLuhn(t *testing.T) {
 	for _, val := range Exb {
-		cd, res, err := StrCheckLuhn(val.fcnum)
+		cd, err := StrCheckLuhn(val.fcnum)
 		if err != nil {
 			t.Log(err, val.fcnum)
 		}
 		if cd != val.valid {
-			t.Errorf("%s, %v, %d", val.fcnum, cd, res)
+			t.Errorf("%s, %v", val.fcnum, cd)
 		}
 	}
 

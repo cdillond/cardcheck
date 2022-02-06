@@ -100,17 +100,20 @@ func StrGetCD(cnum string) (uint64, error) {
 
 // StrCheckLuhn checks if the final digit of any arbitrarily long string of digits matches
 // the checkdigit generated using the preceding digits in the string.
-// Returns false and an error if argument cannot be parsed.
+// Returns false and an InvalidInputError if argument cannot be parsed.
 // Signed prefixes and other non-numeric characters are not permitted.
-func StrCheckLuhn(fcnum string) (bool, uint64, error) {
+func StrCheckLuhn(fcnum string) (bool, error) {
+	if len(fcnum) == 0 {
+		return false, InvalidInputError{}
+	}
 	cd, err := strconv.ParseUint(fcnum[len(fcnum)-1:], 10, 64)
 	if err != nil {
-		return false, 0, InvalidInputError{}
+		return false, InvalidInputError{}
 	}
 	res, err := StrGetCD(fcnum[:len(fcnum)-1])
 	if err != nil {
-		return false, 0, err
+		return false, err
 	}
 
-	return cd == res, res, nil
+	return cd == res, nil
 }
