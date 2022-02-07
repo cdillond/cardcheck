@@ -54,6 +54,9 @@ func StrGetCD(cnum string) (uint64, error) {
 	}
 
 	clen := len(cnum)
+	if clen == 0 {
+		return 0, InvalidInputError{}
+	}
 	var cnums []uint64
 	start := clen % 18
 	if start != 0 {
